@@ -14,7 +14,7 @@ contract ExampleScript is BatchScript {
 
         vm.startBroadcast();
 
-        executeBatch(true, 2);
+        executeBatch(true, 3);
 
         vm.stopBroadcast();
     }

@@ -20,7 +20,7 @@ jobs:
         with:
           files: script/**
 
-      - name: List all changed files
+      - name: List all changed script files
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-script-files.outputs.all_changed_files }}
         run: |
@@ -36,8 +36,9 @@ jobs:
         if: steps.changed-script-files.outputs.any_changed == 'true'
         env:
           WALLET_TYPE: local
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           SCRIPT_FILES: ${{ steps.changed-script-files.outputs.all_changed_files }}
         run: |
           for file in ${SCRIPT_FILES}; do
-            forge script $file --skip-simulation --chain-id 81457 --ffi -vvvvv --private-key ${{ secrets.PRIVATE_KEY }}
+            forge script $file --skip-simulation --chain-id 81457 --ffi -vvvvv --private-key $PRIVATE_KEY
           done
