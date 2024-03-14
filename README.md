@@ -1,66 +1,21 @@
-## Foundry
-
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
-
-Foundry consists of:
-
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
+# Multisig-Tx-Builder
 
 ## Usage
 
-### Build
+1. In your `.env` file, Set `PRIVATE_KEY` to your private key as safe owner or delegate wallet.
 
-```shell
-$ forge build
+2. Copy `script/Example.s.sol` to `script/YourScript.s.sol` and modify it to your multisig script.
+
+3. To build a multisig transaction, run:
+
+```bash
+forge script script/YourScript.s.sol --skip-simulation --chain-id 81457 --ffi -vvvvv --private-key $PRIVATE_KEY
 ```
 
-### Test
+## Useful features
 
-```shell
-$ forge test
+```js
+function executeBatch(bool send_, uint256 nonce_)
 ```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+- Set `send_` to `false` if you are testing the script locally but not create the batched tx on safe.
+- Set `nonce_` to override pending tx on the queue. Use `function executeBatch(bool send_)` if you don't want to customize nonce.
