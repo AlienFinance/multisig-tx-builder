@@ -9,7 +9,7 @@
 3. To build a multisig transaction, run:
 
 ```bash
-forge script script/YourScript.s.sol --skip-simulation --chain-id 81457 --ffi -vvvvv --private-key $PRIVATE_KEY
+forge script script/YourScript.s.sol --sig "run(bool)" $SEND --skip-simulation --chain-id 81457 --ffi -vvvvv --private-key $PRIVATE_KEY
 ```
 
 ## Useful features

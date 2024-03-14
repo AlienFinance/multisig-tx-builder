@@ -9,13 +9,12 @@ contract ExampleScript is BatchScript {
 
     address multisig = 0x7a66F664FA2B8453C4df1F0243821cd1D4625d03;
 
-    function run() external isBatch(multisig) {
-        addToBatch(multisig, new bytes(0));
+    function run(bool send) external isBatch(multisig) {
         addToBatch(multisig, new bytes(0));
 
         vm.startBroadcast();
 
-        executeBatch(true, 4);
+        executeBatch(send, 4);
 
         vm.stopBroadcast();
     }
