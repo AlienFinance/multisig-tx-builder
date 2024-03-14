@@ -20,12 +20,20 @@ jobs:
         with:
           files: script/**
 
+      - name: List all changed files
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-script-files.outputs.all_changed_files }}
+        run: |
+          for file in ${ALL_CHANGED_FILES}; do
+            echo "$file was changed"
+          done
+
       - name: Install Foundry
-        if: steps.changed-script-files.outputs.all_changed_files == 'true'
+        if: steps.changed-script-files.outputs.any_changed == 'true'
         uses: foundry-rs/foundry-toolchain@v1
 
       - name: Run script
-        if: steps.changed-script-files.outputs.all_changed_files == 'true'
+        if: steps.changed-script-files.outputs.any_changed == 'true'
         env:
           SCRIPT_FILES: ${{ steps.changed-script-files.outputs.all_changed_files }}
         run: |
