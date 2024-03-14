@@ -15,18 +15,19 @@ jobs:
           submodules: recursive
 
       - name: Get added script files
-        id: changed-files
+        id: changed-script-files
         uses: tj-actions/changed-files@v43
         with:
-          files: script/**.s.sol
+          files: script/**
 
       - name: Install Foundry
+        if: steps.changed-script-files.outputs.all_changed_files == 'true'
         uses: foundry-rs/foundry-toolchain@v1
 
       - name: Run script
-        if: steps.changed-files.outputs.added_files == 'true'
+        if: steps.changed-script-files.outputs.all_changed_files == 'true'
         env:
-          SCRIPT_FILES: ${{ steps.changed-files.outputs.added_files }}
+          SCRIPT_FILES: ${{ steps.changed-script-files.outputs.all_changed_files }}
         run: |
           if [ "$SCRIPT_FILES" = "[]" ]; then
             echo "No adapter files were modified"
