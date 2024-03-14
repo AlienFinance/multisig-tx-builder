@@ -11,10 +11,11 @@ contract ExampleScript is BatchScript {
 
     function run() external isBatch(multisig) {
         addToBatch(multisig, new bytes(0));
+        addToBatch(multisig, new bytes(0));
 
         vm.startBroadcast();
 
-        executeBatch(true, 3);
+        executeBatch(true, 4);
 
         vm.stopBroadcast();
     }
