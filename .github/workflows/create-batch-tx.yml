@@ -20,24 +20,24 @@ jobs:
         with:
           files: script/**
 
-      - name: List all changed script files
+      - name: List all added script files
         env:
-          ALL_CHANGED_FILES: ${{ steps.changed-script-files.outputs.all_changed_files }}
+          ADDED_FILES: ${{ steps.changed-script-files.outputs.added_files }}
         run: |
-          for file in ${ALL_CHANGED_FILES}; do
-            echo "$file was changed"
+          for file in ${ADDED_FILES}; do
+            echo "$file was added"
           done
 
       - name: Install Foundry
-        if: steps.changed-script-files.outputs.any_changed == 'true'
+        if: steps.changed-script-files.outputs.added_files != '[]'
         uses: foundry-rs/foundry-toolchain@v1
 
       - name: Run script
-        if: steps.changed-script-files.outputs.any_changed == 'true'
+        if: steps.changed-script-files.outputs.added_files != '[]'
         env:
           WALLET_TYPE: local
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-          SCRIPT_FILES: ${{ steps.changed-script-files.outputs.all_changed_files }}
+          SCRIPT_FILES: ${{ steps.changed-script-files.outputs.added_files }}
         run: |
           for file in ${SCRIPT_FILES}; do
             forge script $file --skip-simulation --chain-id 81457 --ffi -vvvvv --private-key $PRIVATE_KEY
