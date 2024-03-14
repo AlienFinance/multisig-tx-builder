@@ -5,30 +5,35 @@ on:
     branches:
       - main
 
-jobs:      
+jobs:
   run:
-    name: Foundry project
+    name: Create batched tx on safe
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           submodules: recursive
 
-      - id: changed-files
+      - name: Get added script files
+        id: changed-files
         uses: tj-actions/changed-files@v43
         with:
-          files_yaml: |
-            script:
-              - 'script/**.s.sol'
+          files: script/**.s.sol
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
 
-      - name: Run tests
+      - name: Run script
+        if: steps.changed-files.outputs.added_files == 'true'
+        env:
+          SCRIPT_FILES: ${{ steps.changed-files.outputs.added_files }}
         run: |
-          SCRIPT_FILES = ${{ steps.changed-files.outputs.added_files }}
+          if [ "$SCRIPT_FILES" = "[]" ]; then
+            echo "No adapter files were modified"
+            exit 0
+          fi
 
-          for i in $(echo $RUN_FILES | tr  -d '"[]' | tr "," "\n")
+          for i in $(echo $SCRIPT_FILES | tr  -d '"[]' | tr "," "\n")
           do
             {
               forge script ${i} --skip-simulation --chain-id 81457 --ffi -vvvvv --private-key ${{ secrets.PRIVATE_KEY }}
