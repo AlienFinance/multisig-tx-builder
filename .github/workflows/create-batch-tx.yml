@@ -35,16 +35,9 @@ jobs:
       - name: Run script
         if: steps.changed-script-files.outputs.any_changed == 'true'
         env:
+          WALLET_TYPE: local
           SCRIPT_FILES: ${{ steps.changed-script-files.outputs.all_changed_files }}
         run: |
-          if [ "$SCRIPT_FILES" = "[]" ]; then
-            echo "No adapter files were modified"
-            exit 0
-          fi
-
-          for i in $(echo $SCRIPT_FILES | tr  -d '"[]' | tr "," "\n")
-          do
-            {
-              forge script ${i} --skip-simulation --chain-id 81457 --ffi -vvvvv --private-key ${{ secrets.PRIVATE_KEY }}
-            }
+          for file in ${SCRIPT_FILES}; do
+            forge script $file --skip-simulation --chain-id 81457 --ffi -vvvvv --private-key ${{ secrets.PRIVATE_KEY }}
           done
