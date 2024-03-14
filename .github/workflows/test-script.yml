@@ -1,0 +1,51 @@
+name: create batch tx
+
+on:
+  pull_request:
+    types:
+      - opened
+    paths:
+      - 'script/*.sol'
+
+jobs:
+  run:
+    name: Simulate batch tx scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get added script files
+        id: changed-script-files
+        uses: tj-actions/changed-files@v43
+        with:
+          files: script/**
+
+      - name: List all added script files
+        env:
+          ADDED_FILES: ${{ steps.changed-script-files.outputs.added_files }}
+        run: |
+          for file in ${ADDED_FILES}; do
+            echo "$file was added"
+          done
+
+      - name: Install Foundry
+        if: steps.changed-script-files.outputs.added_files != ''
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Install libraries
+        if: steps.changed-script-files.outputs.added_files != ''
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Run script
+        if: steps.changed-script-files.outputs.added_files != ''
+        env:
+          WALLET_TYPE: local
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          SCRIPT_FILES: ${{ steps.changed-script-files.outputs.added_files }}
+          SEND: false
+        run: |
+          for file in ${SCRIPT_FILES}; do
+            forge script $file --sig 'run(bool)' $SEND --skip-simulation --chain-id 81457 --ffi -vvvvv --private-key $PRIVATE_KEY
+          done

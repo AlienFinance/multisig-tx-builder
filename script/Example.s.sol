@@ -12,7 +12,7 @@ contract ExampleScript is BatchScript {
 
     address receiver = 0x6f4fE843e549447D68C1287974385DC4D08E60bc;
 
-    function run() external isBatch(multisig) {
+    function run(bool send) external isBatch(multisig) {
         // fetch data before execution
         uint256 receiver_balance_before = IERC20(alien).balanceOf(receiver);
 
@@ -26,7 +26,7 @@ contract ExampleScript is BatchScript {
 
         vm.startBroadcast();
 
-        executeBatch(false);
+        executeBatch(send);
 
         vm.stopBroadcast();
 
