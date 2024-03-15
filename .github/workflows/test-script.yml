@@ -12,7 +12,7 @@ jobs:
     name: Simulate batch tx scripts
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Get added script files
         id: changed-script-files
@@ -34,9 +34,7 @@ jobs:
 
       - name: Install libraries
         if: steps.changed-script-files.outputs.added_files != ''
-        uses: actions/checkout@v3
-        with:
-          submodules: recursive
+        run: forge install
 
       - name: Run script
         if: steps.changed-script-files.outputs.added_files != ''
