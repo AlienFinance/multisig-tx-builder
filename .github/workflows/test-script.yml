@@ -41,9 +41,10 @@ jobs:
         env:
           WALLET_TYPE: local
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          ETH_RPC_URL: ${{ vars.ETH_RPC_URL }}
           SCRIPT_FILES: ${{ steps.changed-script-files.outputs.added_files }}
           SEND: false
         run: |
           for file in ${SCRIPT_FILES}; do
-            forge script $file --sig 'run(bool)' $SEND --skip-simulation --chain-id 81457 --ffi -vvvvv --private-key $PRIVATE_KEY
+            forge script $file --skip-simulation -vvvvv --ffi --rpc-url $ETH_RPC_URL
           done
